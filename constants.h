@@ -9,27 +9,6 @@
 /* colors */
 #define YELLOW  0xFFFF00
 
-/* screen definitions */
-#define homeScreen            1001
-#define mainMenu              1002
-
-/* overlay defintions */
-#define seatbeltAlarm           2300
-
-
-
-
-#define TAG_SLIDER    201
-#define TAG_TOGGLE    202
-#define TAG_BUTTON1   203
-#define TAG_BACK      205
-#define TAG_BUTTON2   204
-
-#define buttonSEL 010
-#define buttonBCK   011
-
-
-
 //SOUNDS
 #define Welcome           "track001.mp3"
 #define WlcmAttn          "track002.mp3"
