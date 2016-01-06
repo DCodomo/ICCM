@@ -8,6 +8,11 @@ This is part of a larger project for a open source hardware & software instrumen
 Abbreviations Guide
 I have a strange obsession with using four-letter abbreviations. If I need less than four letters I just add an X to the end.
 
+| Abbreviation    | Meaning          |
+| --------------- |:------------------------|
+| COMM            | Communications |
+| GPUX            | Graphic User Interface      |
+| UXXX            | User Experience      |
 GPUX: Graphical User Interface
 COMM: Communications
 UXXX: User Experience
