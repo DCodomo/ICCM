@@ -1,6 +1,6 @@
 /**********************************************************************************************************************************
 * Instrument Cluster Control Module (ICCM)
-*  2.0
+*  0.3
 * F0: Main
 * ©2015 Derrick Codomo
 * 
@@ -12,14 +12,14 @@
 *  ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 */
   //B00: standard arduino library inclusions
-    //#include <Scheduler.h>
+    #include <Scheduler.h> /*allows multiple functions to run at the same time*/
     #include <SD.h>
     #include <SPI.h>
     #include <Wire.h>
 
 
   //B01: third-party library inclusions
-    #include "GD2.h"
+    #include "GPU.h" /* specialized version of gameduino library */
     //#include "Graphics.h"
     #include "Time.h"
     //#include "Clock.h" //errors in this library!!
@@ -54,16 +54,28 @@
       Serial.println("CP-F00S02B00-00: serial connection OK");
       
     //B01: devices initialization
-      /* initialize external devices */
-      //setSyncProvider(RTC.get);
-  
+      /* initialize internal clock*/
+//      setSyncProvider(RTC.get);   // the function to get the time from the RTC
+//      if(timeStatus()!= timeSet){ 
+//        error(000002001000); /* problem syncing with the real-time clock */
+//      }
+      /* initialize magnetometer*/
+//      if(!mag.begin()){
+//        error(000002001001); /* problem initializing magnetometer */
+//      }
       /* initialize gpu board */
-      Serial.println("CP-F00S02B1-01: attempting to initialize gui board");
-      GD.begin();
-      Serial.println("CP-F00S02B1-02: gui board OK");
-  
-    //B02: boot user experience
+      if(!gpu.begin()){
+        error(000002001002); /* problem initializing gpu board */
+      }
+      
+    //B02: scheduler
+      Scheduler.startLoop(loop2);
+    
+    //B03: boot user experience
     /* loads splash screens and other effects so that they may display while other setup functions continue to execute.*/
+      uxxx_boot();
+      Serial.println("CP-F00S02B3-00: setup sequence complete");
+      delay(1000);
 
   }
 
@@ -82,23 +94,39 @@
     long dlne_clokSync = 0;
 
   //B01: status (stat) variables
+    static uint16_t value = 0;
 
-/* §4 MASTER TIMING LOOP
+    
+/* §4 MASTER TIMING LOOPS
 *  ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 *  part of the Master Timing mechanism (see readme), controls all timing.
 *  Uses millis(); function
 */
-  void loop() {
+  //B00: Main Loop
+    void loop() {
+      
+      unsigned long curMills = millis();
+      /* retrieves current time (in milliseconds) to use as a comparison between different timing deadlines (dlne) and runs the 
+      *  associated functions when such deadline has passed.
+      * 
+      */
     
-    unsigned long curMills = millis();
-    /* retrieves current time (in milliseconds) to use as a comparison between different timing deadlines (dlne) and runs the 
-    *  associated functions when such deadline has passed.
-    * 
-    */
-  
+    }
+  //B01: GPU Loop
+  void loop2(){
+    
   }
+  
+/* §5 ERROR HANDLING
+*  ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+*  
+*/
+void error(long errorCode){
+  Serial.print("Error: ");
+  Serial.println(errorCode);
+}
 
-/* §5 SHUTDOWN
+/* §6 SHUTDOWN
 *  ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 *  saves all unsaved data and signals the local controller (a seperate device) to cut power to the ICCM (this device)
 */
